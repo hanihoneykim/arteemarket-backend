@@ -22,13 +22,13 @@ class SaleItem(CommonModel):
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-        if self.pk and self.cover_image:
+        if self.pk and self.image:
             try:
                 original = SaleItem.objects.get(pk=self.pk)
-                if original.cover_image != self.cover_image:
-                    self.cover_image = compress_image(self.cover_image, size=(500, 500))
+                if original.image != self.image:
+                    self.image = compress_image(self.image, size=(500, 500))
             except SaleItem.DoesNotExist:
-                self.cover_image = compress_image(self.cover_image, size=(500, 500))
+                self.image = compress_image(self.image, size=(500, 500))
             except:
                 pass
         super().save(*args, **kwargs)
