@@ -5,6 +5,11 @@ from common.models import CommonModel
 from user.models import User
 
 
+class Category(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)
+    name = models.CharField(max_length=30, null=False, blank=False)
+
+
 class SaleItem(CommonModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)
     creator = models.ForeignKey(
@@ -14,6 +19,7 @@ class SaleItem(CommonModel):
     content = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(null=True, blank=True, upload_to=upload_path)
+    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if self.pk and self.cover_image:
