@@ -138,6 +138,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Custom User Model
+AUTH_USER_MODEL = "user.User"
+
 
 ###########################AWS
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
