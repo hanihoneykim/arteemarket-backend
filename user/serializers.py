@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Participant
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,3 +17,10 @@ class TinyUserSerializer(serializers.ModelSerializer):
             "nickname",
             "profile_image",
         )
+
+
+class ParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Participant
+        fields = "__all__"
+        read_only_fields = ("id",)

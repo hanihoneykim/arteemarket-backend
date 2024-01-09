@@ -1,4 +1,5 @@
 from django.urls import path
+from user.views import ParticipantListCreate
 from .views import (
     SaleItemListCreate,
     SaleItemDetail,
@@ -11,4 +12,5 @@ urlpatterns = [
     path("sale-items/<str:pk>", SaleItemDetail.as_view()),
     path("funding-items", FundingItemListCreate.as_view()),
     path("funding-items/<str:pk>", FundingItemDetail.as_view()),
+    path("funding-items/<str:pk>/participants", ParticipantListCreate.as_view()),
 ]

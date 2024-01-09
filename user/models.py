@@ -104,7 +104,7 @@ class Participant(CommonModel):
     shipping_address2 = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user} ({self.funding_item})"
+        return f"{self.user} - {self.funding_item.title}"
 
 
 class Purchase(CommonModel):
