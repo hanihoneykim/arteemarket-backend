@@ -22,6 +22,9 @@ class SaleItem(CommonModel):
         Category, related_name="sales_items", null=True, on_delete=models.CASCADE
     )
 
+    def str(self):
+        return self.title
+
     def save(self, *args, **kwargs):
         if self.pk and self.image:
             try:
@@ -54,6 +57,25 @@ class FundingItem(CommonModel):
     category = models.ForeignKey(
         Category, related_name="funding_items", null=True, on_delete=models.CASCADE
     )
+
+    def str(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if self.pk and self.image:
+            try:
+                original = SaleItem.objects.get(pk=self.pk)
+                if original.image != self.image:
+                    self.image = compress_image(self.image, size=(500, 500))
+            except SaleItem.DoesNotExist:
+                self.image = compress_image(self.image, size=(500, 500))
+            except:
+                pass
+        super().save(*args, **kwargs)
+
+
+class MainPageSlideBanner(models.Model):
+    image = models.ImageField(upload_to=upload_path, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.pk and self.image:
