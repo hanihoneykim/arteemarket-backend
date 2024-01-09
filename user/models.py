@@ -103,6 +103,9 @@ class Participant(CommonModel):
     shipping_address1 = models.CharField(max_length=100, null=True, blank=True)
     shipping_address2 = models.CharField(max_length=100, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.user} ({self.funding_item})"
+
 
 class Purchase(CommonModel):
     """SaleItem 신청 정보"""
