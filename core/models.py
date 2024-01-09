@@ -21,6 +21,9 @@ class SaleItem(CommonModel):
     category = models.ForeignKey(
         Category, related_name="sales_items", null=True, on_delete=models.CASCADE
     )
+    bank_name = models.CharField(max_length=20, null=True, blank=True)
+    bank_account_number = models.CharField(max_length=20, null=True, blank=True)
+    bank_account_owner = models.CharField(max_length=20, null=True, blank=True)
 
     def str(self):
         return self.title
@@ -57,6 +60,9 @@ class FundingItem(CommonModel):
     category = models.ForeignKey(
         Category, related_name="funding_items", null=True, on_delete=models.CASCADE
     )
+    bank_name = models.CharField(max_length=20, null=True, blank=True)
+    bank_account_number = models.CharField(max_length=20, null=True, blank=True)
+    bank_account_owner = models.CharField(max_length=20, null=True, blank=True)
 
     def str(self):
         return self.title
