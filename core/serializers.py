@@ -12,6 +12,15 @@ class SaleItemSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("id",)
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # price 필드를 원하는 형식으로 포매팅
+        formatted_price = "{:,.0f}".format(instance.price)
+        representation["price"] = formatted_price
+
+        return representation
+
 
 class FundingItemSerializer(serializers.ModelSerializer):
     creator = TinyUserSerializer(read_only=True)
