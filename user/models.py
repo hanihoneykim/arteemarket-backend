@@ -84,7 +84,10 @@ class AuthToken(CommonModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-class Participant(models.Model):
+class Participant(CommonModel):
+
+    """FundingItem 신청 정보"""
+
     id = models.CharField(default=generate_hex, max_length=64, primary_key=True)
     user = models.ForeignKey(
         User, null=True, related_name="participant", on_delete=models.CASCADE
@@ -93,6 +96,31 @@ class Participant(models.Model):
         "core.FundingItem",
         null=True,
         related_name="participant",
+        on_delete=models.CASCADE,
+    )
+
+    # 배송 정보
+    is_paid = models.Boolean()
+    name = models.CharField(max_length=20, null=True, blank=True)
+    phone_number = models.CharField(max_length=11, blank=True, null=True)
+    shipping_name = models.CharField(max_length=20, null=True, blank=True)
+    shipping_phone_number = models.CharField(max_length=11, null=True, blank=True)
+    shipping_zipcode = models.CharField(max_length=10, null=True, blank=True)
+    shipping_address1 = models.CharField(max_length=100, null=True, blank=True)
+    shipping_address2 = models.CharField(max_length=100, null=True, blank=True)
+
+
+class Purchase(CommonModel):
+    """SaleItem 신청 정보"""
+
+    id = models.CharField(default=generate_hex, max_length=64, primary_key=True)
+    user = models.ForeignKey(
+        User, null=True, related_name="purchase", on_delete=models.CASCADE
+    )
+    sale_item = models.ForeignKey(
+        "core.SaleItem",
+        null=True,
+        related_name="purchase",
         on_delete=models.CASCADE,
     )
 
