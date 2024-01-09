@@ -34,3 +34,11 @@ class FundingItemListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.validated_data["creator"] = self.request.user
         serializer.save()
+
+
+class FundingItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    parser_classes = [MultiPartParser]
+    serializer_class = FundingItemSerializer
+    permission_classes = [IsCreatorPermission]
+    queryset = FundingItem.objects.all()
+    lookup_field = "pk"
