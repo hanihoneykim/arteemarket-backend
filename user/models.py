@@ -82,3 +82,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 class AuthToken(CommonModel):
     id = models.CharField(default=generate_hex, max_length=64, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Participant(models.Model):
+    id = models.CharField(default=generate_hex, max_length=64, primary_key=True)
+    user = models.ForeignKey(
+        User, null=True, related_name="participant", on_delete=models.CASCADE
+    )
+    funding_item = models.ForeignKey(
+        "core.FundingItem",
+        null=True,
+        related_name="participant",
+        on_delete=models.CASCADE,
+    )
