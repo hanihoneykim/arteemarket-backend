@@ -3,8 +3,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from config.permissions import IsCreatorPermission
 from rest_framework.parsers import MultiPartParser
-from .serializers import SaleItemSerializer
-from .models import SaleItem
+from .serializers import SaleItemSerializer, FundingItemSerializer
+from .models import SaleItem, FundingItem
 
 
 class SaleItemListCreate(generics.ListCreateAPIView):
@@ -23,3 +23,14 @@ class SaleItemDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCreatorPermission]
     queryset = SaleItem.objects.all()
     lookup_field = "pk"
+
+
+class FundingItemListCreate(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser]
+    serializer_class = FundingItemSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = FundingItem.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.validated_data["creator"] = self.request.user
+        serializer.save()

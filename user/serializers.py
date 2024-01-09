@@ -17,4 +17,3 @@ class TinyUserSerializer(serializers.ModelSerializer):
             "nickname",
             "profile_image",
         )
-        read_only_fields = ("id",)

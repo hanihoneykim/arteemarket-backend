@@ -52,10 +52,7 @@ class FundingItem(CommonModel):
     goal_amount = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name="목표 금액"
     )
-    current_amount = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0, verbose_name="현재 모금액"
-    )
-    end_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
     image = models.ImageField(null=True, blank=True, upload_to=upload_path)
     category = models.ForeignKey(
         Category, related_name="funding_items", null=True, on_delete=models.CASCADE
