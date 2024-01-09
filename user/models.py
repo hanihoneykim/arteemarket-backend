@@ -94,7 +94,7 @@ class Participant(CommonModel):
     )
 
     # 배송 정보
-    is_paid = models.Boolean()
+    is_paid = models.BooleanField()
     name = models.CharField(max_length=20, null=True, blank=True)
     phone_number = models.CharField(max_length=11, blank=True, null=True)
     shipping_name = models.CharField(max_length=20, null=True, blank=True)
@@ -119,7 +119,7 @@ class Purchase(CommonModel):
     )
 
     # 배송 정보
-    is_paid = models.Boolean()
+    is_paid = models.BooleanField()
     name = models.CharField(max_length=20, null=True, blank=True)
     phone_number = models.CharField(max_length=11, blank=True, null=True)
     shipping_name = models.CharField(max_length=20, null=True, blank=True)
