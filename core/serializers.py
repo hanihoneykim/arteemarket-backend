@@ -5,7 +5,10 @@ from user.serializers import TinyUserSerializer
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
-    creator = TinyUserSerializer(read_only=True)
+    creator_nickname = serializers.CharField(source="creator.nickname", read_only=True)
+    creator_profile_image = serializers.ImageField(
+        source="creator.profile_image", read_only=True
+    )
 
     class Meta:
         model = SaleItem
@@ -23,7 +26,10 @@ class SaleItemSerializer(serializers.ModelSerializer):
 
 
 class FundingItemSerializer(serializers.ModelSerializer):
-    creator = TinyUserSerializer(read_only=True)
+    creator_nickname = serializers.CharField(source="creator.nickname", read_only=True)
+    creator_profile_image = serializers.ImageField(
+        source="creator.profile_image", read_only=True
+    )
     current_amount = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
