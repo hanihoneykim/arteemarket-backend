@@ -10,7 +10,9 @@ from .models import SaleItem, FundingItem
 class SaleItemListCreate(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser]
     serializer_class = SaleItemSerializer
-    queryset = SaleItem.objects.all()
+
+    def get_queryset(self):
+        return SaleItem.objects.all().order_by("-created_at")
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -42,7 +44,9 @@ class SaleItemDetail(generics.RetrieveUpdateDestroyAPIView):
 class FundingItemListCreate(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser]
     serializer_class = FundingItemSerializer
-    queryset = FundingItem.objects.all()
+
+    def get_queryset(self):
+        return FundingItem.objects.all().order_by("-created_at")
 
     def get_permissions(self):
         if self.request.method == "GET":
