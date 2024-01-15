@@ -19,7 +19,7 @@ class ParticipantListCreate(generics.ListCreateAPIView):
         funding_item = get_object_or_404(FundingItem, pk=pk)
 
         if funding_item.creator != self.request.user:
-            raise PermissionDenied("해당 펀딩아이템의 판매자가 아닙니다.")
+            raise PermissionDenied("해당 펀딩 상품의 판매자가 아닙니다.")
 
         queryset = Participant.objects.filter(funding_item=funding_item)
         serializer = self.serializer_class(queryset, many=True)
@@ -63,7 +63,7 @@ class ParticipantDetail(generics.RetrieveUpdateDestroyAPIView):
         participant = get_object_or_404(
             Participant, funding_item__id=funding_item_pk, id=participant_pk
         )
-        self.check_object_permissions(self.request, participant)  # Check permissions
+        self.check_object_permissions(self.request, participant)
         return participant
 
     def get_permissions(self):
@@ -89,7 +89,7 @@ class PurchaseListCreate(generics.ListCreateAPIView):
         sale_item = get_object_or_404(SaleItem, pk=pk)
 
         if sale_item.creator != self.request.user:
-            raise PermissionDenied("해당 아이템의 판매자가 아닙니다.")
+            raise PermissionDenied("해당 상품의 판매자가 아닙니다.")
 
         queryset = Purchase.objects.filter(sale_item=sale_item)
         serializer = self.serializer_class(queryset, many=True)
@@ -109,3 +109,30 @@ class PurchaseListCreate(generics.ListCreateAPIView):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class PurchaseDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PurchaseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        sale_item_pk = self.kwargs.get("pk")
+        purchase_pk = self.kwargs.get("purchase_pk")
+        purchase = get_object_or_404(
+            Purchase, sale_item__id=sale_item_pk, id=purchase_pk
+        )
+        self.check_object_permissions(self.request, purchase)
+        return purchase
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        sale_item_pk = self.kwargs.get("pk")
+        purchase_pk = self.kwargs.get("purchase_pk")
+        purchase = get_object_or_404(
+            Purchase, sale_item__id=sale_item_pk, id=purchase_pk
+        )
+
+        if purchase.sale_item.creator == self.request.user:
+            return permissions
+        else:
+            raise PermissionDenied("권한이 없습니다.")
