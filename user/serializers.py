@@ -7,6 +7,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = "__all__"
         read_only_fields = ("id",)
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
 
 
 class TinyUserSerializer(serializers.ModelSerializer):
@@ -17,6 +20,31 @@ class TinyUserSerializer(serializers.ModelSerializer):
             "nickname",
             "profile_image",
         )
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(write_only=True, required=False)
+    new_password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "nickname",
+            "password",
+            "profile_image",
+            "old_password",
+            "new_password",
+        )
+        read_only_fields = (
+            "id",
+            "email",
+        )
+        extra_kwargs = {"password": {"write_only": True}}
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
