@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -38,6 +39,31 @@ class UserSignUp(generics.CreateAPIView):
         return Response(
             {"id": str(user.id), "token": str(token.id)}, status=status.HTTP_201_CREATED
         )
+
+
+class UserLogin(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+        try:
+            user = User.objects.get(email=email.strip().lower())
+        except User.DoesNotExist:
+            return Response(
+                {"error": "존재하지 않는 유저거나 비밀번호가 맞지 않습니다."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if user.check_password(password):
+            token = AuthToken.objects.create(user=user)
+            serializer = UserSerializer(user)
+            return Response(
+                {"token": str(token.id), "info": serializer.data},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"error": "존재하지 않는 유저거나 비밀번호가 맞지 않습니다."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class ParticipantListCreate(generics.ListCreateAPIView):
