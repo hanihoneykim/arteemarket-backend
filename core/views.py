@@ -7,8 +7,9 @@ from rest_framework.parsers import MultiPartParser
 from .serializers import (
     SaleItemSerializer,
     FundingItemSerializer,
+    MainPageSlideBannerSerializer,
 )
-from .models import SaleItem, FundingItem
+from .models import SaleItem, FundingItem, MainPageSlideBanner
 
 
 class SaleItemListCreate(generics.ListCreateAPIView):
@@ -78,3 +79,10 @@ class FundingItemDetail(generics.RetrieveUpdateDestroyAPIView):
             return [IsCreatorPermission()]
 
         return super().get_permissions()
+
+
+class MainPageSlideBannerListCreate(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser]
+    permission_classes = [AllowAny]
+    serializer_class = MainPageSlideBannerSerializer
+    queryset = MainPageSlideBanner.objects.all()

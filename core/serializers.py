@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import SaleItem, FundingItem
+from core.models import SaleItem, FundingItem, MainPageSlideBanner
 from user.models import Participant
 from user.serializers import TinyUserSerializer
 
@@ -57,3 +57,9 @@ class FundingItemSerializer(serializers.ModelSerializer):
         representation["goal_amount"] = formatted_goal_amount
 
         return representation
+
+
+class MainPageSlideBannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MainPageSlideBanner
+        fields = "__all__"

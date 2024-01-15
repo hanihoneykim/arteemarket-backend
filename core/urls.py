@@ -10,6 +10,7 @@ from .views import (
     SaleItemDetail,
     FundingItemListCreate,
     FundingItemDetail,
+    MainPageSlideBannerListCreate,
 )
 
 urlpatterns = [
@@ -24,4 +25,5 @@ urlpatterns = [
     ),
     path("sale-items/<str:pk>/purchases", PurchaseListCreate.as_view()),
     path("sale-items/<str:pk>/purchases/<str:purchase_pk>", PurchaseDetail.as_view()),
+    path("mainpage-banners", MainPageSlideBannerListCreate.as_view()),
 ]
