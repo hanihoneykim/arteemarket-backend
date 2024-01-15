@@ -14,6 +14,12 @@ class ParticipantListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Participant.objects.all()
 
+    def get(self, request, pk):
+        funding_item = FundingItem.objects.get(pk=pk)
+        queryset = Participant.objects.filter(funding_item__creator=self.request.user)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request, *args, **kwargs):
         funding_item_id = kwargs.get("pk", None)
         if funding_item_id is None:
