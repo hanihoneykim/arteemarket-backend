@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Participant
+from .models import User, Participant, Purchase
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -27,5 +27,17 @@ class ParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
+        fields = "__all__"
+        read_only_fields = ("id",)
+
+
+class PurchaseSerializer(serializers.ModelSerializer):
+    user_nickname = serializers.CharField(source="user.nickname", read_only=True)
+    user_profile_image = serializers.ImageField(
+        source="user.profile_image", read_only=True
+    )
+
+    class Meta:
+        model = Purchase
         fields = "__all__"
         read_only_fields = ("id",)

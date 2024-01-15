@@ -5,9 +5,9 @@ from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from core.models import FundingItem
-from .serializers import ParticipantSerializer
-from .models import Participant
+from core.models import FundingItem, SaleItem
+from .serializers import ParticipantSerializer, PurchaseSerializer
+from .models import Participant, Purchase
 
 
 class ParticipantListCreate(generics.ListCreateAPIView):
@@ -16,10 +16,12 @@ class ParticipantListCreate(generics.ListCreateAPIView):
     queryset = Participant.objects.all()
 
     def get(self, request, pk):
-        funding_item = FundingItem.objects.get(pk=pk)
-        queryset = Participant.objects.filter(
-            funding_item=funding_item, funding_item__creator=self.request.user
-        )
+        funding_item = get_object_or_404(FundingItem, pk=pk)
+
+        if funding_item.creator != self.request.user:
+            raise PermissionDenied("해당 펀딩아이템의 판매자가 아닙니다.")
+
+        queryset = Participant.objects.filter(funding_item=funding_item)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -76,3 +78,34 @@ class ParticipantDetail(generics.RetrieveUpdateDestroyAPIView):
             return permissions
         else:
             raise PermissionDenied("권한이 없습니다.")
+
+
+class PurchaseListCreate(generics.ListCreateAPIView):
+    serializer_class = PurchaseSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Purchase.objects.all()
+
+    def get(self, request, pk):
+        sale_item = get_object_or_404(SaleItem, pk=pk)
+
+        if sale_item.creator != self.request.user:
+            raise PermissionDenied("해당 아이템의 판매자가 아닙니다.")
+
+        queryset = Purchase.objects.filter(sale_item=sale_item)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        sale_item_id = kwargs.get("pk", None)
+        sale_item = get_object_or_404(SaleItem, id=sale_item_id)
+
+        request.data["user"] = request.user.id
+        request.data["sale_item"] = sale_item.id
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
