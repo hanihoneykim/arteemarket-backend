@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
@@ -16,7 +17,9 @@ class ParticipantListCreate(generics.ListCreateAPIView):
 
     def get(self, request, pk):
         funding_item = FundingItem.objects.get(pk=pk)
-        queryset = Participant.objects.filter(funding_item__creator=self.request.user)
+        queryset = Participant.objects.filter(
+            funding_item=funding_item, funding_item__creator=self.request.user
+        )
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -46,3 +49,30 @@ class ParticipantListCreate(generics.ListCreateAPIView):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class ParticipantDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ParticipantSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        funding_item_pk = self.kwargs.get("pk")
+        participant_pk = self.kwargs.get("participant_pk")
+        participant = get_object_or_404(
+            Participant, funding_item__id=funding_item_pk, id=participant_pk
+        )
+        self.check_object_permissions(self.request, participant)  # Check permissions
+        return participant
+
+    def get_permissions(self):
+        permissions = super().get_permissions()
+        funding_item_pk = self.kwargs.get("pk")
+        participant_pk = self.kwargs.get("participant_pk")
+        participant = get_object_or_404(
+            Participant, funding_item__id=funding_item_pk, id=participant_pk
+        )
+
+        if participant.funding_item.creator == self.request.user:
+            return permissions
+        else:
+            raise PermissionDenied("권한이 없습니다.")
