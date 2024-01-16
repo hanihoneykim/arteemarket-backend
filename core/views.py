@@ -76,16 +76,29 @@ class FundingItemListCreate(generics.ListCreateAPIView):
         my_funding_items_param = request.query_params.get(
             "my_funding_items", ""
         ).lower()
+        recent_param = request.query_params.get("recent", "").lower()
+        category_param = request.query_params.get("category", "").lower()
         queryset = self.queryset
 
+        # 내가 작성한 펀딩 리스트
         if my_funding_items_param == "true" and self.request.user.is_authenticated:
             queryset = queryset.filter(creator=self.request.user)
 
+        # 검색어
         search_keyword = self.request.query_params.get("search_keyword", "")
         if search_keyword:
             queryset = queryset.filter(title__icontains=search_keyword)
 
+        # 카테고리 필터링
+        if category_param:
+            queryset = queryset.filter(category=category_param)
+
         queryset = queryset.distinct().order_by("-created_at")
+
+        # 최신 작성 8개
+        if recent_param == "true":
+            queryset = queryset[:8]
+
         serializer = FundingItemSerializer(queryset, many=True)
         return Response(serializer.data)
 

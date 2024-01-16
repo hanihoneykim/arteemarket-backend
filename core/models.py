@@ -8,8 +8,19 @@ class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)
     name = models.CharField(max_length=30, null=False, blank=False)
 
+    def __str__(self):
+        return self.name
+
 
 class SaleItem(CommonModel):
+    CATEGORY_CHOICES = [
+        ("idol", "아이돌"),
+        ("stationery", "문구"),
+        ("accessory", "악세사리"),
+        ("food", "푸드"),
+        ("interior", "인테리어"),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)
     creator = models.ForeignKey(
         "user.User", null=True, related_name="sales_items", on_delete=models.CASCADE
@@ -18,14 +29,14 @@ class SaleItem(CommonModel):
     content = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(null=True, blank=True, upload_to=upload_path)
-    category = models.ForeignKey(
-        Category, related_name="sales_items", null=True, on_delete=models.CASCADE
+    category = models.CharField(
+        max_length=100, choices=CATEGORY_CHOICES, blank=True, null=True
     )
     bank_name = models.CharField(max_length=20, null=True, blank=True)
     bank_account_number = models.CharField(max_length=20, null=True, blank=True)
     bank_account_owner = models.CharField(max_length=20, null=True, blank=True)
 
-    def str(self):
+    def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
@@ -42,6 +53,14 @@ class SaleItem(CommonModel):
 
 
 class FundingItem(CommonModel):
+    CATEGORY_CHOICES = [
+        ("idol", "아이돌"),
+        ("stationery", "문구"),
+        ("accessory", "악세사리"),
+        ("food", "푸드"),
+        ("interior", "인테리어"),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)
     creator = models.ForeignKey(
         "user.User", null=True, related_name="funding_items", on_delete=models.CASCADE
@@ -54,14 +73,14 @@ class FundingItem(CommonModel):
     )
     end_date = models.DateField(null=True, blank=True)
     image = models.ImageField(null=True, blank=True, upload_to=upload_path)
-    category = models.ForeignKey(
-        Category, related_name="funding_items", null=True, on_delete=models.CASCADE
+    category = models.CharField(
+        max_length=100, choices=CATEGORY_CHOICES, blank=True, null=True
     )
     bank_name = models.CharField(max_length=20, null=True, blank=True)
     bank_account_number = models.CharField(max_length=20, null=True, blank=True)
     bank_account_owner = models.CharField(max_length=20, null=True, blank=True)
 
-    def str(self):
+    def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
