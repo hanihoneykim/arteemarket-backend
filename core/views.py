@@ -26,12 +26,8 @@ class SaleItemListCreate(generics.ListCreateAPIView):
         return super().get_permissions()
 
     def get(self, request, *args, **kwargs):
-        my_sale_items_param = request.query_params.get("my_sale_items", "").lower()
         category_param = request.query_params.get("category", "").lower()
         queryset = self.queryset
-
-        if my_sale_items_param == "true" and self.request.user.is_authenticated:
-            queryset = queryset.filter(creator=self.request.user)
 
         # 카테고리 필터링
         if category_param:
@@ -76,6 +72,15 @@ class SaleItemSearch(generics.ListCreateAPIView):
         return Response(serializer.data)
 
 
+class MySaleItem(generics.ListCreateAPIView):
+    serializer_class = SaleItemSerializer
+    queryset = SaleItem.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return SaleItem.objects.filter(creator=self.request.user)
+
+
 class FundingItemListCreate(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser]
     serializer_class = FundingItemSerializer
@@ -90,16 +95,9 @@ class FundingItemListCreate(generics.ListCreateAPIView):
         return super().get_permissions()
 
     def get(self, request, *args, **kwargs):
-        my_funding_items_param = request.query_params.get(
-            "my_funding_items", ""
-        ).lower()
         recent_param = request.query_params.get("recent", "").lower()
         category_param = request.query_params.get("category", "").lower()
         queryset = self.queryset
-
-        # 내가 작성한 펀딩 리스트
-        if my_funding_items_param == "true" and self.request.user.is_authenticated:
-            queryset = queryset.filter(creator=self.request.user)
 
         # 카테고리 필터링
         if category_param:
@@ -148,6 +146,15 @@ class FundingItemDetail(generics.RetrieveUpdateDestroyAPIView):
             return [IsCreatorPermission()]
 
         return super().get_permissions()
+
+
+class MyFundingItem(generics.ListCreateAPIView):
+    serializer_class = FundingItemSerializer
+    queryset = FundingItem.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return FundingItem.objects.filter(creator=self.request.user)
 
 
 class MainPageSlideBannerListCreate(generics.ListCreateAPIView):
