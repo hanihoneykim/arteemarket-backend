@@ -11,12 +11,15 @@ from .views import (
     FundingItemListCreate,
     FundingItemDetail,
     MainPageSlideBannerListCreate,
+    FundingItemSearch,
 )
 
 urlpatterns = [
     path("sale-items", SaleItemListCreate.as_view()),
+    path("sale-items/search", SaleItemListCreate.as_view()),
     path("sale-items/<str:pk>", SaleItemDetail.as_view()),
     path("funding-items", FundingItemListCreate.as_view()),
+    path("funding-items/search", FundingItemSearch.as_view()),
     path("funding-items/<str:pk>", FundingItemDetail.as_view()),
     path("funding-items/<str:pk>/participants", ParticipantListCreate.as_view()),
     path(

@@ -19,6 +19,8 @@ class SaleItem(CommonModel):
         ("accessory", "악세사리"),
         ("food", "푸드"),
         ("interior", "인테리어"),
+        ("pet", "반려동물"),
+        ("etc", "기타"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)
@@ -59,6 +61,8 @@ class FundingItem(CommonModel):
         ("accessory", "악세사리"),
         ("food", "푸드"),
         ("interior", "인테리어"),
+        ("pet", "반려동물"),
+        ("etc", "기타"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, blank=False)

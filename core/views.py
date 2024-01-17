@@ -27,14 +27,15 @@ class SaleItemListCreate(generics.ListCreateAPIView):
 
     def get(self, request, *args, **kwargs):
         my_sale_items_param = request.query_params.get("my_sale_items", "").lower()
+        category_param = request.query_params.get("category", "").lower()
         queryset = self.queryset
 
         if my_sale_items_param == "true" and self.request.user.is_authenticated:
             queryset = queryset.filter(creator=self.request.user)
 
-        search_keyword = self.request.query_params.get("search_keyword", "")
-        if search_keyword:
-            queryset = queryset.filter(title__icontains=search_keyword)
+        # 카테고리 필터링
+        if category_param:
+            queryset = queryset.filter(category=category_param)
 
         queryset = queryset.distinct().order_by("-created_at")
         serializer = SaleItemSerializer(queryset, many=True)
@@ -57,6 +58,22 @@ class SaleItemDetail(generics.RetrieveUpdateDestroyAPIView):
             return [IsCreatorPermission()]
 
         return super().get_permissions()
+
+
+class SaleItemSearch(generics.ListCreateAPIView):
+    serializer_class = SaleItemSerializer
+    queryset = SaleItem.objects.all()
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.queryset
+        search_keyword = self.request.query_params.get("search_keyword", "")
+        if search_keyword:
+            queryset = queryset.filter(title__icontains=search_keyword)
+
+        queryset = queryset.distinct().order_by("-created_at")
+        serializer = SaleItemSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class FundingItemListCreate(generics.ListCreateAPIView):
@@ -84,11 +101,6 @@ class FundingItemListCreate(generics.ListCreateAPIView):
         if my_funding_items_param == "true" and self.request.user.is_authenticated:
             queryset = queryset.filter(creator=self.request.user)
 
-        # 검색어
-        search_keyword = self.request.query_params.get("search_keyword", "")
-        if search_keyword:
-            queryset = queryset.filter(title__icontains=search_keyword)
-
         # 카테고리 필터링
         if category_param:
             queryset = queryset.filter(category=category_param)
@@ -105,6 +117,22 @@ class FundingItemListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.validated_data["creator"] = self.request.user
         serializer.save()
+
+
+class FundingItemSearch(generics.ListCreateAPIView):
+    serializer_class = FundingItemSerializer
+    queryset = FundingItem.objects.all()
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.queryset
+        search_keyword = self.request.query_params.get("search_keyword", "")
+        if search_keyword:
+            queryset = queryset.filter(title__icontains=search_keyword)
+
+        queryset = queryset.distinct().order_by("-created_at")
+        serializer = FundingItemSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class FundingItemDetail(generics.RetrieveUpdateDestroyAPIView):
