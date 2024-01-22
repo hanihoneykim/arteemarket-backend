@@ -189,6 +189,7 @@ class NoticeDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class EventListCreate(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser]
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -202,6 +203,7 @@ class EventListCreate(generics.ListCreateAPIView):
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    parser_classes = [MultiPartParser]
     permission_classes = [IsAdminUser]
     serializer_class = EventSerializer
     lookup_field = "pk"
