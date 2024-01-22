@@ -15,7 +15,7 @@ class Category(models.Model):
 class SaleItem(CommonModel):
     CATEGORY_CHOICES = [
         ("idol", "아이돌"),
-        ("stationery", "문구"),
+        ("subscription ", "구독상품"),
         ("accessory", "악세사리"),
         ("food", "푸드"),
         ("interior", "인테리어"),
@@ -57,7 +57,7 @@ class SaleItem(CommonModel):
 class FundingItem(CommonModel):
     CATEGORY_CHOICES = [
         ("idol", "아이돌"),
-        ("stationery", "문구"),
+        ("subscription ", "구독상품"),
         ("accessory", "악세사리"),
         ("food", "푸드"),
         ("interior", "인테리어"),
