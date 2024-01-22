@@ -15,6 +15,8 @@ from .views import (
     SaleItemSearch,
     MySaleItem,
     MyFundingItem,
+    NoticeListCreate,
+    NoticeDetail,
 )
 
 urlpatterns = [
@@ -34,4 +36,6 @@ urlpatterns = [
     path("sale-items/<str:pk>/purchases", PurchaseListCreate.as_view()),
     path("sale-items/<str:pk>/purchases/<str:purchase_pk>", PurchaseDetail.as_view()),
     path("mainpage-banners", MainPageSlideBannerListCreate.as_view()),
+    path("notice", NoticeListCreate.as_view()),
+    path("notice/<str:pk>", NoticeDetail.as_view()),
 ]
