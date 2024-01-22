@@ -9,8 +9,9 @@ from .serializers import (
     FundingItemSerializer,
     MainPageSlideBannerSerializer,
     NoticeSerializer,
+    EventSerializer,
 )
-from .models import SaleItem, FundingItem, MainPageSlideBanner, Notice
+from .models import SaleItem, FundingItem, MainPageSlideBanner, Notice, Event
 
 
 class SaleItemListCreate(generics.ListCreateAPIView):
@@ -185,3 +186,25 @@ class NoticeDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Notice.objects.all()
+
+
+class EventListCreate(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        elif self.request.method == "POST":
+            return [IsAdminUser()]
+
+        return super().get_permissions()
+
+
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAdminUser]
+    serializer_class = EventSerializer
+    lookup_field = "pk"
+
+    def get_queryset(self):
+        return Event.objects.all()
