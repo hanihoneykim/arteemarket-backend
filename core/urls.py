@@ -17,6 +17,8 @@ from .views import (
     MyFundingItem,
     NoticeListCreate,
     NoticeDetail,
+    EventListCreate,
+    EventDetail,
 )
 
 urlpatterns = [
@@ -38,4 +40,6 @@ urlpatterns = [
     path("mainpage-banners", MainPageSlideBannerListCreate.as_view()),
     path("notice", NoticeListCreate.as_view()),
     path("notice/<str:pk>", NoticeDetail.as_view()),
+    path("event", EventListCreate.as_view()),
+    path("event/<str:pk>", EventDetail.as_view()),
 ]
