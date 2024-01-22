@@ -117,6 +117,19 @@ class Event(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, auto_created=True)
     title = models.CharField(max_length=120, null=False, blank=False)
     content = models.TextField(null=False, blank=False)
+    image = models.ImageField(null=True, blank=True, upload_to=upload_path)
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.pk and self.image:
+            try:
+                original = SaleItem.objects.get(pk=self.pk)
+                if original.image != self.image:
+                    self.image = compress_image(self.image, size=(500, 500))
+            except SaleItem.DoesNotExist:
+                self.image = compress_image(self.image, size=(500, 500))
+            except:
+                pass
+        super().save(*args, **kwargs)
