@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import SaleItem, FundingItem, MainPageSlideBanner
+from core.models import SaleItem, FundingItem, MainPageSlideBanner, Notice
 from user.models import Participant
 from user.serializers import TinyUserSerializer
 
@@ -76,4 +76,10 @@ class FundingItemSerializer(serializers.ModelSerializer):
 class MainPageSlideBannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = MainPageSlideBanner
+        fields = "__all__"
+
+
+class NoticeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notice
         fields = "__all__"

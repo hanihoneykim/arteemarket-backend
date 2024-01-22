@@ -1,15 +1,16 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from config.permissions import IsCreatorPermission
 from rest_framework.parsers import MultiPartParser
 from .serializers import (
     SaleItemSerializer,
     FundingItemSerializer,
     MainPageSlideBannerSerializer,
+    NoticeSerializer,
 )
-from .models import SaleItem, FundingItem, MainPageSlideBanner
+from .models import SaleItem, FundingItem, MainPageSlideBanner, Notice
 
 
 class SaleItemListCreate(generics.ListCreateAPIView):
@@ -162,3 +163,25 @@ class MainPageSlideBannerListCreate(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = MainPageSlideBannerSerializer
     queryset = MainPageSlideBanner.objects.all()
+
+
+class NoticeListCreate(generics.ListCreateAPIView):
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        elif self.request.method == "POST":
+            return [IsAdminUser()]
+
+        return super().get_permissions()
+
+
+class NoticeDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAdminUser]
+    serializer_class = NoticeSerializer
+    lookup_field = "pk"
+
+    def get_queryset(self):
+        return Notice.objects.all()
