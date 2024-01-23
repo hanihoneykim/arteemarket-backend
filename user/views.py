@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from time import sleep
 from rest_framework.exceptions import PermissionDenied
+from django.contrib.auth import logout
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -76,6 +78,15 @@ class UserLogin(APIView):
                 {"error": "존재하지 않는 유저거나 비밀번호가 맞지 않습니다."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class UserLogout(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        sleep(5)
+        logout(request)
+        return Response({"ok": "bye!"})
 
 
 class MyProfileDetail(generics.RetrieveUpdateDestroyAPIView):
