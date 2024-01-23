@@ -33,12 +33,10 @@ class SaleItemSerializer(serializers.ModelSerializer):
 
 
 class FundingItemSerializer(serializers.ModelSerializer):
-    end_date = serializers.DateTimeField(format="%Y년 %m월 %d일 %H시 %M분", read_only=True)
     creator_nickname = serializers.CharField(source="creator.nickname", read_only=True)
     creator_profile_image = serializers.ImageField(
         source="creator.profile_image", read_only=True
     )
-    category_name = serializers.SerializerMethodField(read_only=True)
     current_amount = serializers.SerializerMethodField(read_only=True)
     current_percentage = serializers.SerializerMethodField(read_only=True)
 
@@ -67,12 +65,6 @@ class FundingItemSerializer(serializers.ModelSerializer):
 
         return current_percentage
 
-    def get_category_name(self, obj):
-        category_name = dict(FundingItem.CATEGORY_CHOICES).get(
-            obj.category, obj.category
-        )
-        return category_name
-
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
@@ -83,6 +75,14 @@ class FundingItemSerializer(serializers.ModelSerializer):
         # goal_amount 필드를 원하는 형식으로 포매팅
         formatted_goal_amount = "{:,.0f}".format(instance.goal_amount)
         representation["goal_amount"] = formatted_goal_amount
+
+        if instance.end_date:
+            representation["end_date"] = instance.end_date.strftime("%Y-%m-%d %p %I:%M")
+
+        category_name = dict(FundingItem.CATEGORY_CHOICES).get(
+            instance.category, instance.category
+        )
+        representation["category"] = category_name
 
         return representation
 
