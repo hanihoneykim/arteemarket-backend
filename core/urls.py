@@ -38,8 +38,8 @@ urlpatterns = [
     path("sale-items/<str:pk>/purchases", PurchaseListCreate.as_view()),
     path("sale-items/<str:pk>/purchases/<str:purchase_pk>", PurchaseDetail.as_view()),
     path("mainpage-banners", MainPageSlideBannerListCreate.as_view()),
-    path("notice", NoticeListCreate.as_view()),
-    path("notice/<str:pk>", NoticeDetail.as_view()),
-    path("event", EventListCreate.as_view()),
-    path("event/<str:pk>", EventDetail.as_view()),
+    path("notices", NoticeListCreate.as_view()),
+    path("notices/<str:pk>", NoticeDetail.as_view()),
+    path("events", EventListCreate.as_view()),
+    path("events/<str:pk>", EventDetail.as_view()),
 ]

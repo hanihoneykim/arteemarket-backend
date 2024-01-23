@@ -46,9 +46,9 @@ class SaleItem(CommonModel):
             try:
                 original = SaleItem.objects.get(pk=self.pk)
                 if original.image != self.image:
-                    self.image = compress_image(self.image, size=(500, 500))
+                    self.image = compress_image(self.image, size=(1000, 1000))
             except SaleItem.DoesNotExist:
-                self.image = compress_image(self.image, size=(500, 500))
+                self.image = compress_image(self.image, size=(1000, 1000))
             except:
                 pass
         super().save(*args, **kwargs)
@@ -92,9 +92,9 @@ class FundingItem(CommonModel):
             try:
                 original = SaleItem.objects.get(pk=self.pk)
                 if original.image != self.image:
-                    self.image = compress_image(self.image, size=(500, 500))
+                    self.image = compress_image(self.image, size=(1000, 1000))
             except SaleItem.DoesNotExist:
-                self.image = compress_image(self.image, size=(500, 500))
+                self.image = compress_image(self.image, size=(1000, 1000))
             except:
                 pass
         super().save(*args, **kwargs)
@@ -127,9 +127,9 @@ class Event(CommonModel):
             try:
                 original = SaleItem.objects.get(pk=self.pk)
                 if original.image != self.image:
-                    self.image = compress_image(self.image, size=(500, 500))
+                    self.image = compress_image(self.image, size=(1000, 1000))
             except SaleItem.DoesNotExist:
-                self.image = compress_image(self.image, size=(500, 500))
+                self.image = compress_image(self.image, size=(1000, 1000))
             except:
                 pass
         super().save(*args, **kwargs)

@@ -111,13 +111,13 @@ class Participant(CommonModel):
 
     # 배송 정보
     is_paid = models.BooleanField()
+    payment_name = models.CharField(max_length=20, null=True, blank=True)
     name = models.CharField(max_length=20, null=True, blank=True)
     phone_number = models.CharField(max_length=11, blank=True, null=True)
     shipping_name = models.CharField(max_length=20, null=True, blank=True)
     shipping_phone_number = models.CharField(max_length=11, null=True, blank=True)
     shipping_zipcode = models.CharField(max_length=10, null=True, blank=True)
-    shipping_address1 = models.CharField(max_length=100, null=True, blank=True)
-    shipping_address2 = models.CharField(max_length=100, null=True, blank=True)
+    shipping_address1 = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.funding_item.title}"
@@ -139,10 +139,13 @@ class Purchase(CommonModel):
 
     # 배송 정보
     is_paid = models.BooleanField()
+    payment_name = models.CharField(max_length=20, null=True, blank=True)
     name = models.CharField(max_length=20, null=True, blank=True)
     phone_number = models.CharField(max_length=11, blank=True, null=True)
     shipping_name = models.CharField(max_length=20, null=True, blank=True)
     shipping_phone_number = models.CharField(max_length=11, null=True, blank=True)
     shipping_zipcode = models.CharField(max_length=10, null=True, blank=True)
-    shipping_address1 = models.CharField(max_length=100, null=True, blank=True)
-    shipping_address2 = models.CharField(max_length=100, null=True, blank=True)
+    shipping_address1 = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.sale_item.title}"

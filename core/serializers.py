@@ -5,6 +5,7 @@ from user.serializers import TinyUserSerializer
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
+    category_name = serializers.SerializerMethodField(read_only=True)
     creator_nickname = serializers.CharField(source="creator.nickname", read_only=True)
     creator_profile_image = serializers.ImageField(
         source="creator.profile_image", read_only=True
@@ -14,6 +15,12 @@ class SaleItemSerializer(serializers.ModelSerializer):
         model = SaleItem
         fields = "__all__"
         read_only_fields = ("id",)
+
+    def get_category_name(self, obj):
+        category_name = dict(FundingItem.CATEGORY_CHOICES).get(
+            obj.category, obj.category
+        )
+        return category_name
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -26,11 +33,12 @@ class SaleItemSerializer(serializers.ModelSerializer):
 
 
 class FundingItemSerializer(serializers.ModelSerializer):
+    end_date = serializers.DateTimeField(format="%Y년 %m월 %d일 %H시 %M분", read_only=True)
     creator_nickname = serializers.CharField(source="creator.nickname", read_only=True)
     creator_profile_image = serializers.ImageField(
         source="creator.profile_image", read_only=True
     )
-    category_name = serializers.CharField(source="category.name", read_only=True)
+    category_name = serializers.SerializerMethodField(read_only=True)
     current_amount = serializers.SerializerMethodField(read_only=True)
     current_percentage = serializers.SerializerMethodField(read_only=True)
 
@@ -58,6 +66,12 @@ class FundingItemSerializer(serializers.ModelSerializer):
             current_percentage = 0
 
         return current_percentage
+
+    def get_category_name(self, obj):
+        category_name = dict(FundingItem.CATEGORY_CHOICES).get(
+            obj.category, obj.category
+        )
+        return category_name
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

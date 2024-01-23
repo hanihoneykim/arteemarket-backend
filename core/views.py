@@ -167,7 +167,7 @@ class MainPageSlideBannerListCreate(generics.ListCreateAPIView):
 
 
 class NoticeListCreate(generics.ListCreateAPIView):
-    queryset = Notice.objects.all()
+    queryset = Notice.objects.all().order_by("-created_at")
     serializer_class = NoticeSerializer
 
     def get_permissions(self):
@@ -180,9 +180,16 @@ class NoticeListCreate(generics.ListCreateAPIView):
 
 
 class NoticeDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUser]
     serializer_class = NoticeSerializer
     lookup_field = "pk"
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        elif self.request.method == ["PUT", "PATCH", "DELETE"]:
+            return [IsAdminUser()]
+
+        return super().get_permissions()
 
     def get_queryset(self):
         return Notice.objects.all()
@@ -190,7 +197,7 @@ class NoticeDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class EventListCreate(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser]
-    queryset = Event.objects.all()
+    queryset = Event.objects.all().order_by("-created_at")
     serializer_class = EventSerializer
 
     def get_permissions(self):
@@ -204,9 +211,16 @@ class EventListCreate(generics.ListCreateAPIView):
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = [MultiPartParser]
-    permission_classes = [IsAdminUser]
     serializer_class = EventSerializer
     lookup_field = "pk"
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        elif self.request.method == ["PUT", "PATCH", "DELETE"]:
+            return [IsAdminUser()]
+
+        return super().get_permissions()
 
     def get_queryset(self):
         return Event.objects.all()
