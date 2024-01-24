@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from time import sleep
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ValidationError
 from django.contrib.auth import logout
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -160,13 +161,19 @@ class ParticipantListCreate(generics.ListCreateAPIView):
         funding_item = get_object_or_404(FundingItem, id=funding_item_id)
 
         # FundingItem의 end_date가 오늘 이후인지 확인
-        if funding_item.end_date < timezone.now().date():
+        if funding_item.end_date < timezone.now():
             return Response(
                 {"detail": "신청 가능한 기간이 아닙니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         request.data["user"] = request.user.id
         request.data["funding_item"] = funding_item.id
+
+        is_paid = request.data.get("is_paid", False)
+        if isinstance(is_paid, str):
+            is_paid = is_paid.lower() == "true"
+        if not is_paid:
+            raise ValidationError(detail="무통장 입금 후 펀딩을 신청해주세요.")
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -225,6 +232,12 @@ class PurchaseListCreate(generics.ListCreateAPIView):
 
         request.data["user"] = request.user.id
         request.data["sale_item"] = sale_item.id
+
+        is_paid = request.data.get("is_paid", False)
+        if isinstance(is_paid, str):
+            is_paid = is_paid.lower() == "true"
+        if not is_paid:
+            raise ValidationError(detail="무통장 입금 후 펀딩을 신청해주세요.")
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
