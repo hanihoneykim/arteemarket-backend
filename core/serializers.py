@@ -128,3 +128,15 @@ class TinyFundingItemSerializer(serializers.ModelSerializer):
             current_percentage = 0
 
         return current_percentage
+
+
+class TinySaleItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SaleItem
+        fields = (
+            "id",
+            "title",
+            "price",
+            "image",
+        )
+        read_only_fields = ("id",)

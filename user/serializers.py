@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, Participant, Purchase
-from core.serializers import TinyFundingItemSerializer
+from core.serializers import TinyFundingItemSerializer, TinySaleItemSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -80,5 +80,14 @@ class MyParticipantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Participant
+        fields = "__all__"
+        read_only_fields = ("id",)
+
+
+class MyPurchaseSerializer(serializers.ModelSerializer):
+    sale_item = TinySaleItemSerializer(read_only=True)
+
+    class Meta:
+        model = Purchase
         fields = "__all__"
         read_only_fields = ("id",)

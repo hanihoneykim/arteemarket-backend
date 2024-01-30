@@ -17,6 +17,7 @@ from .serializers import (
     UserSerializer,
     UserProfileSerializer,
     MyParticipantSerializer,
+    MyPurchaseSerializer,
 )
 from .models import Participant, Purchase, User, AuthToken
 from .social import (
@@ -313,3 +314,11 @@ class MyParticipantList(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Participant.objects.filter(user=user)
+
+
+class MyPurchaseList(generics.ListAPIView):
+    serializer_class = MyPurchaseSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Purchase.objects.filter(user=user)
