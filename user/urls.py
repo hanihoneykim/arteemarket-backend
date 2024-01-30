@@ -7,6 +7,7 @@ from .views import (
     UserLogout,
     MyParticipantList,
     MyPurchaseList,
+    MyParticipantDetail,
 )
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path("logout", UserLogout.as_view()),
     path("myprofile", MyProfileDetail.as_view()),
     path("my-participants", MyParticipantList.as_view()),
+    path("my-participants/<str:pk>", MyParticipantDetail.as_view()),
     path("my-purchases", MyPurchaseList.as_view()),
     path("social/<str:provider>", SocialAuthentication.as_view()),
 ]

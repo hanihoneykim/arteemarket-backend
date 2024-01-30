@@ -316,6 +316,22 @@ class MyParticipantList(generics.ListAPIView):
         return Participant.objects.filter(user=user)
 
 
+class MyParticipantDetail(generics.RetrieveAPIView):
+    serializer_class = MyParticipantSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        participant_pk = self.kwargs.get("pk")
+        participant = get_object_or_404(Participant, id=participant_pk)
+        return participant
+
+    def get(self, request, *args, **kwargs):
+        participant = self.get_object()
+        if participant.user != request.user:
+            raise PermissionDenied("해당 펀딩 신청자가 아닙니다.")
+        return self.retrieve(request, *args, **kwargs)
+
+
 class MyPurchaseList(generics.ListAPIView):
     serializer_class = MyPurchaseSerializer
 
