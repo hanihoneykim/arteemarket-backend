@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from core.models import SaleItem, FundingItem, MainPageSlideBanner, Notice, Event
 from user.models import Participant
-from user.serializers import TinyUserSerializer
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
@@ -103,3 +102,29 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = "__all__"
+
+
+class TinyFundingItemSerializer(serializers.ModelSerializer):
+    current_percentage = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = FundingItem
+        fields = (
+            "id",
+            "title",
+            "current_percentage",
+            "image",
+        )
+        read_only_fields = ("id",)
+
+    def get_current_percentage(self, obj):
+        participant_count = Participant.objects.filter(funding_item=obj).count()
+        current_amount = participant_count * obj.price
+
+        # goal_amount가 0이 아닌 경우에만 퍼센티지 계산
+        if obj.goal_amount != 0:
+            current_percentage = int((current_amount / obj.goal_amount) * 100)
+        else:
+            current_percentage = 0
+
+        return current_percentage

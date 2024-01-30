@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User, Participant, Purchase
+from core.serializers import TinyFundingItemSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,6 +40,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "profile_image",
             "old_password",
             "new_password",
+            "name",
+            "phone_number",
         )
         read_only_fields = (
             "id",
@@ -67,5 +70,15 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Purchase
+        fields = "__all__"
+        read_only_fields = ("id",)
+
+
+class MyParticipantSerializer(serializers.ModelSerializer):
+    user_nickname = serializers.CharField(source="user.nickname", read_only=True)
+    funding_item = TinyFundingItemSerializer(read_only=True)
+
+    class Meta:
+        model = Participant
         fields = "__all__"
         read_only_fields = ("id",)

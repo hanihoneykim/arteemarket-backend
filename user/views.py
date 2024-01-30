@@ -16,6 +16,7 @@ from .serializers import (
     PurchaseSerializer,
     UserSerializer,
     UserProfileSerializer,
+    MyParticipantSerializer,
 )
 from .models import Participant, Purchase, User, AuthToken
 from .social import (
@@ -98,7 +99,7 @@ class MyProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_object(self):
         return self.request.user
 
-    def update(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = self.get_serializer(user, data=request.data, partial=True)
         print(serializer.is_valid())
@@ -128,7 +129,6 @@ class MyProfileDetail(generics.RetrieveUpdateDestroyAPIView):
                         {"ok": False, "error": "기존 비밀번호를 확인해주세요."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-
             serializer.save()
             return Response(serializer.data)
 
@@ -305,3 +305,11 @@ class SocialAuthentication(APIView):
             data={"detail": f"Cannot get user information from {provider}"},
             status=status.HTTP_401_UNAUTHORIZED,
         )
+
+
+class MyParticipantList(generics.ListAPIView):
+    serializer_class = MyParticipantSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Participant.objects.filter(user=user)
