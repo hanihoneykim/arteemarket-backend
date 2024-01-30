@@ -338,3 +338,19 @@ class MyPurchaseList(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Purchase.objects.filter(user=user)
+
+
+class MyPurchaseDetail(generics.RetrieveAPIView):
+    serializer_class = MyPurchaseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        purchase_pk = self.kwargs.get("pk")
+        purchase = get_object_or_404(Purchase, id=purchase_pk)
+        return purchase
+
+    def get(self, request, *args, **kwargs):
+        purchase = self.get_object()
+        if purchase.user != request.user:
+            raise PermissionDenied("해당 프리오더 신청자가 아닙니다.")
+        return self.retrieve(request, *args, **kwargs)

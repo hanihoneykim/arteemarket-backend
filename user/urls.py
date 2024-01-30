@@ -8,6 +8,7 @@ from .views import (
     MyParticipantList,
     MyPurchaseList,
     MyParticipantDetail,
+    MyPurchaseDetail,
 )
 
 urlpatterns = [
@@ -18,5 +19,6 @@ urlpatterns = [
     path("my-participants", MyParticipantList.as_view()),
     path("my-participants/<str:pk>", MyParticipantDetail.as_view()),
     path("my-purchases", MyPurchaseList.as_view()),
+    path("my-purchases/<str:pk>", MyPurchaseDetail.as_view()),
     path("social/<str:provider>", SocialAuthentication.as_view()),
 ]
