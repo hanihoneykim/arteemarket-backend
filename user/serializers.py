@@ -27,25 +27,32 @@ class TinyUserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    old_password = serializers.CharField(write_only=True, required=False)
-    new_password = serializers.CharField(write_only=True, required=False)
-
     class Meta:
         model = User
         fields = (
             "id",
             "email",
             "nickname",
-            "password",
             "profile_image",
-            "old_password",
-            "new_password",
             "name",
             "phone_number",
         )
         read_only_fields = (
             "id",
             "email",
+        )
+
+
+class EditPasswordSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(write_only=True, required=False)
+    new_password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = User
+        fields = (
+            "password",
+            "old_password",
+            "new_password",
         )
         extra_kwargs = {"password": {"write_only": True}}
 

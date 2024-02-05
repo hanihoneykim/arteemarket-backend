@@ -140,3 +140,12 @@ class TinySaleItemSerializer(serializers.ModelSerializer):
             "image",
         )
         read_only_fields = ("id",)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # price 필드를 원하는 형식으로 포매팅
+        formatted_price = "{:,.0f}".format(instance.price)
+        representation["price"] = formatted_price
+
+        return representation

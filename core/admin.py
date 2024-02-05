@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, MainPageSlideBanner, FundingItem, SaleItem, Notice
+from .models import Category, MainPageSlideBanner, FundingItem, SaleItem, Notice, Event
 
 
 class FundingItemAdmin(admin.ModelAdmin):
@@ -11,3 +11,4 @@ admin.site.register(MainPageSlideBanner)
 admin.site.register(FundingItem, FundingItemAdmin)
 admin.site.register(SaleItem)
 admin.site.register(Notice)
+admin.site.register(Event)
