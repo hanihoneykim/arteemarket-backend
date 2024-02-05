@@ -1,6 +1,7 @@
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from .models import AuthToken
 
 KAKAO_REST_API_KEY = settings.KAKAO_REST_API_KEY
 USER_MODEL = get_user_model()
@@ -48,14 +49,20 @@ def kakao_get_user(access_token=None):
 
     kakao_response = requests.post(url, headers=headers)
     kakao_response = kakao_response.json()
+    print("kakao_response", kakao_response)
     user, _ = USER_MODEL.objects.get_or_create(
         social_provider="kakao", social_uid=kakao_response["id"]
     )
     if kakao_account := kakao_response.get("kakao_account"):
-        # user.nickname = kakao_account.get('nickname')
-        # user.email = kakao_account.get('email')
+        profile = kakao_account.get("profile")
+        user.nickname = profile.get("nickname")
+        user.set_unusable_password()
         user.save()
-    user.nickname = kakao_response.get("id")
+    # user.nickname = kakao_response.get("id")
+    print(
+        "user.nickname:",
+        user.nickname,
+    )
     return user
 
 

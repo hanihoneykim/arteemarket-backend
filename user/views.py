@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
 from time import sleep
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError
@@ -26,6 +27,7 @@ from .social import (
     naver_get_access_token,
     naver_get_user,
 )
+import requests
 
 
 class UserSignUp(generics.CreateAPIView):
@@ -111,25 +113,26 @@ class MyProfileDetail(generics.RetrieveUpdateDestroyAPIView):
                     and request.data.get("nickname") != request.user.nickname
                 ):
                     return Response(
-                        {"error": "이미 존재하는 닉네임입니다."}, status=status.HTTP_400_BAD_REQUEST
-                    )
-            if request.data.get("old_password"):
-                old_password = request.data.get("old_password")
-
-                # Verify old password
-                print(old_password)
-                print(user.password)
-                print(check_password(old_password, user.password))
-                print(user.check_password(old_password))
-                if old_password and check_password(old_password, user.password):
-                    # If old password is correct, update to the new password
-                    new_password = request.data.get("new_password")
-                    user.set_password(new_password)
-                else:
-                    return Response(
-                        {"ok": False, "error": "기존 비밀번호를 확인해주세요."},
+                        {"error": "이미 존재하는 닉네임입니다."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+            # if request.data.get("old_password"):
+            #     old_password = request.data.get("old_password")
+
+            #     # Verify old password
+            #     print(old_password)
+            #     print(user.password)
+            #     print(check_password(old_password, user.password))
+            #     print(user.check_password(old_password))
+            #     if old_password and check_password(old_password, user.password):
+            #         # If old password is correct, update to the new password
+            #         new_password = request.data.get("new_password")
+            #         user.set_password(new_password)
+            #     else:
+            #         return Response(
+            #             {"ok": False, "error": "기존 비밀번호를 확인해주세요."},
+            #             status=status.HTTP_400_BAD_REQUEST,
+            #         )
             serializer.save()
             return Response(serializer.data)
 
@@ -164,7 +167,8 @@ class ParticipantListCreate(generics.ListCreateAPIView):
         # FundingItem의 end_date가 오늘 이후인지 확인
         if funding_item.end_date < timezone.now():
             return Response(
-                {"detail": "신청 가능한 기간이 아닙니다."}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "신청 가능한 기간이 아닙니다."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         request.data["user"] = request.user.id
@@ -286,6 +290,18 @@ class SocialAuthentication(APIView):
                 case "kakao":
                     access_token = kakao_get_access_token(request.data)
                     user = kakao_get_user(access_token)
+                    token = AuthToken.objects.create(user=user)
+                    print("token:", str(token.id))
+                    print("id:", str(user.id))
+                    return Response(
+                        {
+                            "id": str(user.id),
+                            "token": str(token.id),
+                            "nickname": str(user.nickname),
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+
                 case "naver":
                     access_token = naver_get_access_token(request.data)
                     user = naver_get_user(access_token)
