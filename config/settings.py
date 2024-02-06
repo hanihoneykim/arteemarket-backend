@@ -218,6 +218,8 @@ NAVER_CLIENT_SECRET = env("NAVER_CLIENT_SECRET")
 
 ### Sentry
 if not DEBUG:
+    SESSION_COOKIE_DOMAIN = ".arteemarket.xyz"
+    CSRF_COOKIE_DOMAIN = ".arteemarket.xyz"
     sentry_sdk.init(
         dsn="https://56696a1eae635fe978d7e0c6f974991b@us.sentry.io/4506699111661568",
         traces_sample_rate=1.0,
