@@ -1,0 +1,23 @@
+databases:
+  - name: arteemarket
+    databaseName: arteemarket
+    user: arteemarket
+    region: singapore
+    plan: free
+
+services:
+  - type: web
+    name: arteemarket
+    runtime: python
+    region: singapore
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn arteemarket.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: arteemarket
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
