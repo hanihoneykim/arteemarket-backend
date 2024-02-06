@@ -34,6 +34,7 @@ DEBUG = "RENDER" not in os.environ
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    "backend.arteemarket.xyz",
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
@@ -189,8 +190,8 @@ if DEBUG:
     ]
     CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 else:
-    CORS_ALLOWED_ORIGINS = ["https://arteemarket-frontend.onrender.com"]
-    CSRF_TRUSTED_ORIGINS = ["https://arteemarket-frontend.onrender.com"]
+    CORS_ALLOWED_ORIGINS = ["https://www.arteemarket.xyz"]
+    CSRF_TRUSTED_ORIGINS = ["https://www.arteemarket.xyz"]
 
 CORS_ALLOW_CREDENTIALS = True
 
