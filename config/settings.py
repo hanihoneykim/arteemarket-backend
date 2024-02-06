@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import environ
 import dj_database_url
+import sentry_sdk
 
 env = environ.Env()
 
@@ -181,15 +182,17 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+else:
+    CORS_ALLOWED_ORIGINS = ["https://arteemarket-frontend.onrender.com"]
+    CSRF_TRUSTED_ORIGINS = ["https://arteemarket-frontend.onrender.com"]
 
 CORS_ALLOW_CREDENTIALS = True
-
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
-
 
 ###########################AWS
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
@@ -211,3 +214,12 @@ MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
 KAKAO_REST_API_KEY = env("KAKAO_REST_API_KEY")
 NAVER_CLIENT_ID = env("NAVER_CLIENT_ID")
 NAVER_CLIENT_SECRET = env("NAVER_CLIENT_SECRET")
+
+
+### Sentry
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="https://56696a1eae635fe978d7e0c6f974991b@us.sentry.io/4506699111661568",
+        traces_sample_rate=1.0,
+        profiles_sample_rate=1.0,
+    )
